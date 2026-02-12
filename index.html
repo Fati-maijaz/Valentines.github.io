@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Be My Valentine</title>
+<style>
+
+* { font-family: monospace; image-rendering: pixelated; }
+
+body {
+  margin:0;
+  background:#ffd1dc;
+  overflow:hidden;
+  text-align:center;
+}
+
+/* PIXEL BACKGROUND */
+.bg {
+  position:fixed;
+  width:100%;
+  height:100%;
+  background: repeating-linear-gradient(
+    45deg,#ffb6c1,#ffb6c1 20px,#ffc0cb 20px,#ffc0cb 40px
+  );
+  z-index:-2;
+}
+
+/* FLOATING HEARTS & ROSES */
+.float {
+  position:absolute;
+  font-size:22px;
+  animation: float 7s linear infinite;
+}
+@keyframes float {
+  from { transform:translateY(110vh); }
+  to { transform:translateY(-10vh); }
+}
+
+/* CENTER */
+.center {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
+}
+
+/* PIXEL CAT */
+.cat {
+  position:relative;
+  width:120px;
+  height:100px;
+  background:#ffccaa;
+  border:6px solid #000;
+}
+.eye {
+  width:12px; height:12px; background:black; position:absolute; top:30px;
+}
+.eye.left { left:25px; }
+.eye.right { right:25px; }
+.mouth {
+  width:20px; height:10px; border-bottom:4px solid black;
+  position:absolute; bottom:20px; left:50%; transform:translateX(-50%);
+}
+
+/* TAIL */
+.tail {
+  position:absolute;
+  width:60px; height:20px;
+  background:#ffccaa;
+  border:6px solid black;
+  right:-60px; top:50px;
+  transform-origin:left center;
+  animation: wag 1s infinite alternate;
+}
+@keyframes wag { from{rotate:20deg;} to{rotate:-20deg;} }
+
+/* BUTTONS */
+button {
+  font-size:22px;
+  padding:12px 30px;
+  border:4px solid black;
+  background:#ff4f8b;
+  color:white;
+  margin:10px;
+  cursor:pointer;
+}
+
+/* LOVE SCREEN */
+#loveScreen {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:linear-gradient(#ffc1cc,#ff9eb5);
+  text-align:center;
+  overflow:hidden;
+}
+
+#loveText {
+  font-size:70px;
+  margin-top:10vh;
+  text-shadow:4px 4px white;
+}
+
+/* PIXEL LETTER */
+.letter {
+  width:280px;
+  height:180px;
+  background:white;
+  border:6px solid black;
+  margin:40px auto;
+  position:relative;
+  cursor:pointer;
+  transition:0.6s;
+}
+
+.letter::before {
+  content:"";
+  position:absolute;
+  width:100%;
+  height:100%;
+  background:#ffccd5;
+  clip-path:polygon(0 0,100% 0,50% 60%);
+  top:0;
+  left:0;
+}
+
+.letter.open {
+  height:260px;
+}
+
+.letterText {
+  opacity:0;
+  font-size:22px;
+  padding:20px;
+  transition:0.6s;
+}
+
+.letter.open .letterText {
+  opacity:1;
+}
+
+/* CONFETTI */
+.confetti {
+  position:absolute;
+  width:10px; height:10px;
+  animation: fall 4s linear infinite;
+}
+@keyframes fall {
+  from { transform:translateY(-10vh); }
+  to { transform:translateY(110vh); }
+}
+
+/* HAPPY CAT */
+.happyCat {
+  font-size:160px;
+  animation: bounce 1s infinite;
+}
+@keyframes bounce {
+  0%,100% { transform:translateY(0); }
+  50% { transform:translateY(-30px); }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<div class="center" id="main">
+  
+  <!-- PIXEL CAT -->
+  <div class="cat">
+    <div class="eye left"></div>
+    <div class="eye right"></div>
+    <div class="mouth"></div>
+    <div class="tail"></div>
+  </div>
+
+  <h1>Will you be my Valentine? 💌</h1>
+
+  <div>
+    <button id="yesBtn">YES 💖</button>
+    <button id="noBtn">NO 😼</button>
+  </div>
+
+</div>
+
+<!-- LOVE SCREEN -->
+<div id="loveScreen">
+  <div id="loveText">💖 I LOVE YOU 💖</div>
+
+  <!-- LETTER -->
+  <div class="letter" id="letter">
+    <div class="letterText">
+      💌 I love you.<br><br>
+      And you’re stuck with me forever 💕
+    </div>
+  </div>
+
+  <div class="happyCat">😻💘</div>
+</div>
+
+<script>
+
+// FLOATING HEARTS + ROSES
+for(let i=0;i<60;i++){
+  let f=document.createElement("div");
+  f.className="float";
+  f.innerHTML=Math.random()>0.5?"💗":"🌹";
+  f.style.left=Math.random()*100+"vw";
+  f.style.animationDuration=(4+Math.random()*6)+"s";
+  document.body.appendChild(f);
+}
+
+// NO BUTTON CHAOS
+let noBtn=document.getElementById("noBtn");
+let yesBtn=document.getElementById("yesBtn");
+let offset=0;
+let yesSize=22;
+
+noBtn.onclick=()=>{
+  offset+=150;
+  noBtn.style.transform=`translateX(${offset}px)`;
+
+  if(Math.random()>0.5){
+    noBtn.style.transform=`translate(${Math.random()*300}px,${Math.random()*200}px)`;
+  }
+
+  yesSize+=4;
+  yesBtn.style.fontSize=yesSize+"px";
+};
+
+// YES BUTTON
+yesBtn.onclick=()=>{
+  document.getElementById("main").style.display="none";
+  document.getElementById("loveScreen").style.display="block";
+
+  // CONFETTI
+  for(let i=0;i<250;i++){
+    let c=document.createElement("div");
+    c.className="confetti";
+    c.style.left=Math.random()*100+"vw";
+    c.style.background=["#ff0000","#ff69b4","#ffffff","#ff1493","#ffb6c1"][Math.floor(Math.random()*5)];
+    c.style.animationDuration=(2+Math.random()*3)+"s";
+    document.body.appendChild(c);
+  }
+
+  // MUSIC (no file)
+  let ctx=new AudioContext();
+  let o=ctx.createOscillator();
+  let g=ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  o.type="sine";
+  o.frequency.setValueAtTime(440,ctx.currentTime);
+  o.frequency.exponentialRampToValueAtTime(660,ctx.currentTime+1);
+  g.gain.value=0.1;
+  o.start();
+  o.stop(ctx.currentTime+2);
+};
+
+// LETTER OPEN
+let letter=document.getElementById("letter");
+letter.onclick=()=>{
+  letter.classList.toggle("open");
+};
+
+</script>
+
+</body>
+</html>
